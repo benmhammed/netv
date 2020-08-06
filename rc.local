@@ -1,0 +1,19 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+sudo ip rule add from 10.128.0.0/20 table vpnbypass #Allow communication from Subnet
+sudo ip rule add to 10.128.0.0/20 table vpnbypass  #Allow communication to Subnet
+sudo ip rule add to 169.254.169.254 table vpnbypass  #Allow communication to Metadata Service
+sudo ip route add table vpnbypass to 10.128.0.0/20 dev ens4 #Selecting route for vpnbypass table
+sudo ip route add table vpnbypass default via 10.128.0.1 dev ens4 #selecting gateway
+nmcli connection up "NCVPN-IL-Tel Aviv-UDP"
+exit 0
